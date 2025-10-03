@@ -1,4 +1,4 @@
-import { initialBooks } from "./data";
+import { initialBooks, initialGenres } from "./data";
 import { Book, ReadingStatus } from "./types";
 
 //variável de escopo global para simular o estado do BD
