@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        {/* ThemeProvider com as configurações de Dark Mode */}
+        {/* ThemeProvider configurações de Dark Mode */}
         <ThemeProvider
           attribute="class" // Adiciona 'dark' ou 'light' à tag <html>
           defaultTheme="system" // Padrão: Seguir a preferência do sistema
