@@ -21,7 +21,7 @@ export const initialBooks: Book[] = [
     pages: 300,
     rating: 5,
     synopsis:
-      "Um pai e seu filho viajam por uma paisagem pós-apocalíptica, devastada e fria. A jornada é uma luta constante pela sobrevivência e pela preservação da humanidade. [cite: 199]",
+      "Um pai e seu filho viajam por uma paisagem pós-apocalíptica, devastada e fria. A jornada é uma luta constante pela sobrevivência e pela preservação da humanidade.",
     cover: "https://m.media-amazon.com/images/I/81sv0MNR-LL._SY425_.jpg",
     status: "LIDO" as ReadingStatus,
     notes:
@@ -36,22 +36,22 @@ export const initialBooks: Book[] = [
     pages: 462,
     rating: 4,
     synopsis:
-      "Mesmo um código ruim pode funcionar. Mas se ele não for limpo, pode acabar com um projeto de desenvolvimento. Este livro é um manual para a escrita de software elegante e eficaz. [cite: 199]",
+      "Mesmo um código ruim pode funcionar. Mas se ele não for limpo, pode acabar com um projeto de desenvolvimento. Este livro é um manual para a escrita de software elegante e eficaz.",
     cover: "https://m.media-amazon.com/images/I/71dH97FwGbL._SY385_.jpg",
-    status: "LENDO" as ReadingStatus, // Livro em progresso [cite: 100]
+    status: "LENDO" as ReadingStatus,
   },
   {
     id: "b3",
     title: "Cem Anos de Solidão",
     author: "Gabriel García Márquez",
-    genre: "Realismo Mágico", // Gênero presente nos requisitos [cite: 153]
+    genre: "Realismo Mágico",
     year: 1967,
     pages: 417,
     rating: 5,
     synopsis:
-      "A história da família Buendía na aldeia de Macondo, uma obra-prima que mistura fantasia e realidade histórica. [cite: 199]",
+      "A história da família Buendía na aldeia de Macondo, uma obra-prima que mistura fantasia e realidade histórica.",
     cover: "https://m.media-amazon.com/images/I/817esPahlrL._SY425_.jpg",
-    status: "QUERO_LER" as ReadingStatus, // Livro na lista de desejos [cite: 147]
+    status: "QUERO_LER" as ReadingStatus,
   },
   {
     id: "b4",
@@ -62,9 +62,9 @@ export const initialBooks: Book[] = [
     pages: 498,
     rating: 4,
     synopsis:
-      "Uma análise fascinante sobre a história da humanidade, desde a Idade da Pedra até os dias atuais, explorando como o Homo Sapiens conseguiu dominar o planeta. [cite: 199]",
+      "Uma análise fascinante sobre a história da humanidade, desde a Idade da Pedra até os dias atuais, explorando como o Homo Sapiens conseguiu dominar o planeta.",
     cover:
-      "https://m.media-amazon.com/images/I/41FU42ESk5L._SY445_SX342_ControlCacheEqualizer_.jpg",
+      "https://m.media-amazon.com/images/I/51fuvXO6wvL._SY445_SX342_ControlCacheEqualizer_.jpg",
     status: "PAUSADO" as ReadingStatus,
   },
   {
@@ -76,7 +76,7 @@ export const initialBooks: Book[] = [
     pages: 423,
     rating: 5,
     synopsis:
-      "O início da épica jornada para destruir o Um Anel, reunindo a Sociedade e enfrentando as forças do mal. [cite: 199]",
+      "O início da épica jornada para destruir o Um Anel, reunindo a Sociedade e enfrentando as forças do mal.",
     cover: "https://m.media-amazon.com/images/I/81hCVEC0ExL._SY425_.jpg",
     status: "LIDO" as ReadingStatus,
   },

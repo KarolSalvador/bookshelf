@@ -6,6 +6,8 @@ import { Book } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Star, Eye, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DeleteBookDialog } from "./DeleteBookDialog";
+
 import {
   Card,
   CardContent,
@@ -34,10 +36,10 @@ const renderStars = (rating: number) => {
 
 export default function BookCard({ book }: BookCardProps) {
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg self-start min-h-0">
-      <CardHeader className="p-0 relative aspect-[2/3] bg-muted">
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg p-0">
+      <CardHeader className="p-0 relative aspect-[3/3] bg-muted">
         {/*capa do livro*/}
-        <div className="relative w-full h-full flex-shrink-0">
+        <div className="w-full h-auto flex-shrink-0">
           <Image
             src={book.cover || "/placeholder-cover.jpg"}
             alt={`Capa do livro ${book.title}`}
@@ -49,14 +51,14 @@ export default function BookCard({ book }: BookCardProps) {
         </div>
         {/* Status de Leitura */}
         <Badge
-          className="absolute top-2 right-2 text-xs font-semibold"
+          className="absolute top-2 right-2 text-xs font-semibold bg-slate-300"
           variant={book.status === "LENDO" ? "default" : "secondary"}
         >
           {book.status}
         </Badge>
       </CardHeader>
 
-      <CardContent className="p-3 flex-grow space-y-1">
+      <CardContent className="p-2 flex-grow space-y-1">
         {/* Título e Autor*/}
         <CardTitle className="text-lg leading-snug line-clamp-2">
           {book.title}
@@ -76,7 +78,7 @@ export default function BookCard({ book }: BookCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 flex justify-between border-t bg-muted/20">
+      <CardFooter className="p-1 flex justify-between border-t bg-muted/20">
         {/* Botões para Visualizar, Editar e Excluir*/}
         <Button size="icon" variant="ghost" asChild title="Visualizar Detalhes">
           <Link href={`/books/${book.id}`}>
@@ -88,14 +90,13 @@ export default function BookCard({ book }: BookCardProps) {
             <Edit className="h-4 w-4" />
           </Link>
         </Button>
-        <Button
-          size="icon"
-          variant="destructive"
-          disabled
-          title="Excluir (Em breve)"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <div>
+          <DeleteBookDialog
+            bookId={book.id}
+            bookTitle={book.title}
+            asIcon={true}
+          />
+        </div>
       </CardFooter>
     </Card>
   );
