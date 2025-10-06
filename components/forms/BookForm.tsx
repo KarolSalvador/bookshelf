@@ -161,8 +161,11 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
     try {
       await boundSaveAction(formData);
       // O redirect dentro da action já cuida da navegação.
-    } catch (e: any) {
-      setError(e.message || "Erro desconhecido ao salvar o livro.");
+    } catch (e: unknown) {
+      const message =
+        e instanceof Error ? e.message : "Erro desconhecido ao salvar o livro."; // Fallback seguro
+
+      setError(message);
     }
   };
 

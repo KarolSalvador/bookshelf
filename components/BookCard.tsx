@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Book } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
-import { Star, Eye, Edit, Trash2 } from "lucide-react";
+import { Star, Eye, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteBookDialog } from "./DeleteBookDialog";
 

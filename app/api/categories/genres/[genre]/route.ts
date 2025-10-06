@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bookService, genreService } from "@/lib/book-service";
+import { genreService } from "@/lib/book-service";
 
 //contexto para acessar o parâmetro id
 type Context = {

@@ -1,8 +1,22 @@
 import { initialBooks, initialGenres } from "./data";
 import { Book, ReadingStatus } from "./types";
 
-//variável de escopo global para simular o estado do BD
-let bookStore: Book[] = [...initialBooks];
+const globalState = global as typeof global & {
+  bookStore?: Book[];
+  genreStore?: string[];
+};
+
+if (!globalState.bookStore) {
+  globalState.bookStore = [...initialBooks];
+}
+// A variável local 'bookStore' agora referencia o array persistente
+let bookStore: Book[] = globalState.bookStore;
+
+// A mesma lógica para genres
+if (!globalState.genreStore) {
+  globalState.genreStore = [...initialGenres, "Realismo Mágico"];
+}
+let genreStore: string[] = globalState.genreStore;
 
 //Simular adição de um novo livro
 function createBook(bookData: Omit<Book, "id">): Book {
@@ -43,6 +57,7 @@ function updateBook(
 function deleteBook(id: string): boolean {
   const initialLength = bookStore.length;
   bookStore = bookStore.filter((book) => book.id !== id);
+  globalState.bookStore = bookStore;
   return bookStore.length < initialLength;
 }
 
@@ -56,7 +71,6 @@ export const bookService = {
 };
 
 //Adiciona gênero usado nos dados iniciais
-let genreStore: string[] = [...initialGenres, "Realismo Mágico"];
 
 function getGenres(): string[] {
   return [...genreStore].sort();
@@ -74,6 +88,7 @@ function addGenre(genre: string): string[] {
 function deleteGenre(genre: string): boolean {
   const initialLength = genreStore.length;
   genreStore = genreStore.filter((g) => g !== genre);
+  globalState.genreStore = genreStore;
   return genreStore.length < initialLength;
 }
 
