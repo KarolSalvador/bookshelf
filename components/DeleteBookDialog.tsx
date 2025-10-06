@@ -60,8 +60,8 @@ export function DeleteBookDialog({
         <DialogHeader>
           <DialogTitle>Confirmação de Exclusão</DialogTitle>
           <DialogDescription className="!text-gray-900 dark:!text-white">
-            Tem certeza que deseja excluir o livro **"{bookTitle}"**? Esta ação
-            é irreversível.
+            Tem certeza que deseja excluir o livro **&quot;{bookTitle};**? Esta
+            ação é irreversível.
           </DialogDescription>
         </DialogHeader>
 
