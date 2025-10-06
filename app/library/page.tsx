@@ -55,7 +55,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
     <div className="space-y-8">
       {/* HEADER DA PÁGINA */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Sua Biblioteca</h1>
+        <h1 className=" text-base sm:text-3xl font-bold tracking-tight">Sua Biblioteca</h1>
         <Button asChild>
           <Link href="/books/add">
             <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Novo Livro
