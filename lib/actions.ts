@@ -60,7 +60,7 @@ export async function saveBookAction(
   revalidatePath(`/books/${result.id}`);
   revalidatePath(`/books/${result.id}/edit`);
 
-  redirect(`/books/${result.id}`);
+  redirect(`/library`);
 }
 
 // Remoção de Livro

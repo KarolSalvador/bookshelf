@@ -6,7 +6,6 @@ import { Book } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import BookCard from "@/components/BookCard";
 import Filters from "@/components/Filters";
-import { genreService } from "@/lib/book-service";
 
 interface LibraryPageProps {
   searchParams: {
