@@ -50,12 +50,32 @@ export default function BookCard({ book }: BookCardProps) {
           />
         </div>
         {/* Status de Leitura */}
-        <Badge
-          className="absolute top-2 right-2 text-xs font-semibold bg-slate-300"
-          variant={book.status === "LENDO" ? "default" : "secondary"}
-        >
-          {book.status}
-        </Badge>
+        {book.status === "LENDO" && (
+          <Badge
+            className="absolute top-2 right-2 text-xs font-semibold bg-red-500"
+            variant="default"
+          >
+            {book.status}
+          </Badge>
+        )}
+        {book.status === "LIDO" && (
+          <Badge
+            className="absolute top-2 right-2 text-xs font-semibold bg-green-500"
+            variant="secondary"
+          >
+            {book.status}
+          </Badge>
+        )}
+        {book.status === "QUERO_LER" && (
+          <Badge
+            className="absolute top-2 right-2 text-xs font-semibold bg-blue-500"
+            variant="secondary"
+          >
+            {book.status}
+          </Badge>
+        )}
+
+        
       </CardHeader>
 
       <CardContent className="p-2 flex-grow space-y-1">
