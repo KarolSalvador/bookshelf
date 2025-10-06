@@ -3,12 +3,15 @@ import { bookService } from "@/lib/book-service";
 import { Book } from "@/lib/types";
 
 //contexto para acessar o parâmetro id
-type Context = {
-  params: { id: string };
-};
+// type Context = {
+//   params: { id: string };
+// };
 
-export async function GET(request: Request, context: Context) {
-  const { id } = context.params;
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const  id = params.id;
 
   try {
     const book = bookService.getBookById(id);
@@ -29,8 +32,8 @@ export async function GET(request: Request, context: Context) {
   }
 }
 
-export async function PUT(request: Request, context: Context) {
-  const { id } = context.params;
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
+  const id = params.id;
 
   try {
     const data = await request.json();
@@ -58,8 +61,11 @@ export async function PUT(request: Request, context: Context) {
   }
 }
 
-export async function DELETE(request: Request, context: Context) {
-  const { id } = context.params;
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const id = params.id;
 
   try {
     const wasDeleted = bookService.deleteBook(id);
