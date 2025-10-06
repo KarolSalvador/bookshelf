@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { bookService } from "@/lib/book-service";
 import { Book } from "@/lib/types";
 
@@ -6,7 +6,7 @@ interface RouteContext {
   params: { id: string };
 }
 
-export async function GET(request: Request, context: RouteContext) {
+export async function GET(request: NextRequest, context: RouteContext) {
   const id = context.params.id;
 
   try {
@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     return NextResponse.json(book, { status: 200 });
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json(
       { message: "Erro ao buscar detalhes do livro." },
       { status: 500 }
@@ -28,7 +28,7 @@ export async function GET(request: Request, context: RouteContext) {
   }
 }
 
-export async function PUT(request: Request, context: RouteContext) {
+export async function PUT(request: NextRequest, context: RouteContext) {
   const id = context.params.id;
 
   try {
@@ -49,7 +49,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
     return NextResponse.json(updatedBook, { status: 200 });
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json(
       { message: "Erro ao atualizar livro." },
       { status: 500 }
@@ -57,7 +57,7 @@ export async function PUT(request: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(request: Request, context: RouteContext) {
+export async function DELETE(request: NextRequest, context: RouteContext) {
   const id = context.params.id;
 
   try {
@@ -71,7 +71,7 @@ export async function DELETE(request: Request, context: RouteContext) {
 
     //status 204 de excluão bem sucedida
     return new NextResponse(null, { status: 204 });
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json(
       { message: "Erro ao remover livro." },
       { status: 500 }
