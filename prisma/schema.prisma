@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum ReadingStatus {
+  QUERO_LER
+  LENDO
+  LIDO
+  PAUSADO
+  ABANDONADO
+}
+
+model Genre {
+  name String @id @unique
+
+  books Book[]
+}
+
+model Book {
+  id           String            @id @default(uuid())
+  title        String
+  author       String
+  year         Int?
+  pages        Int?
+  rating       Int?
+  synopsis     String
+  cover        String
+
+  isbn         String?
+  notes        String?
+
+  currentPage  Int               @default(0)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  status       ReadingStatus     @default(QUERO_LER)
+
+  genreID      String
+  genre        Genre             @relation(fields: [genreId], references: [name])
+
+  @@index([genreId])
+
+}
