@@ -10,6 +10,7 @@ function createBook(bookData: Omit<Book, "id">): Book {
     id: Date.now().toString(),
     ...bookData,
     status: bookData.status || ("QUERO_LER" as ReadingStatus),
+    currentPage: bookData.currentPage || 0,
   };
   bookStore.push(newBook);
   return newBook;

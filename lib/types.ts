@@ -19,6 +19,8 @@ export interface Book {
   cover: string;
   status: ReadingStatus;
   notes?: string;
+  currentPage: number;
+  isbn?: string;
 }
 
 // Modelo de Categoria (Para Gêneros)

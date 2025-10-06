@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Book, ReadingStatus } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Edit, ArrowLeft } from "lucide-react";
+import { Star, Edit, ArrowLeft, BookOpen, Hash } from "lucide-react";
 import Link from "next/link";
 import { DeleteBookDialog } from "@/components/DeleteBookDialog";
 
@@ -35,6 +35,11 @@ export default async function BookDetailsPage({
   if (!book) {
     notFound();
   }
+
+  const readingProgress =
+    book.pages > 0 && book.currentPage > 0
+      ? Math.round((book.currentPage / book.pages) * 100)
+      : 0;
 
   return (
     <div className="space-y-8">
@@ -85,11 +90,12 @@ export default async function BookDetailsPage({
           </div>
 
           {/* Informações e Ações */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Informações Detalhadas */}
             <div className="space-y-3">
               <p>
-                <strong>Páginas:</strong> {book.pages}
+                <strong>Gênero:</strong>{" "}
+                <Badge variant="outline">{book.genre}</Badge>
               </p>
               <p>
                 <strong>Ano:</strong> {book.year}
@@ -107,20 +113,47 @@ export default async function BookDetailsPage({
                   {book.status}
                 </Badge>
               </div>
+
+              {book.isbn && (
+                <p>
+                  <Hash className="inline h-4 w-4 mr-1 text-muted-foreground" />
+                  <strong>ISBN:</strong> {book.isbn}
+                </p>
+              )}
+            </div>
+
+            {/* Progresso e Páginas*/}
+            <div className="space-y-3 p-4 border rounded-lg bg-secondary/20">
+              <h3 className="font-semibold flex items-center">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Progresso de Leitura
+              </h3>
               <p>
-                <strong>Gênero:</strong>{" "}
-                <Badge variant="outline">{book.genre}</Badge>
+                <strong>Páginas Lidas:</strong> {book.currentPage} /{" "}
+                {book.pages}
               </p>
+              <p>
+                <strong>Progresso:</strong> {readingProgress}%
+              </p>
+              {/* BARRA DE PROGRESSO SIMPLES */}
+              <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700">
+                <div
+                  className="h-2.5 rounded-full bg-primary"
+                  style={{ width: `${readingProgress}%` }}
+                ></div>
+              </div>
             </div>
 
             {/* Ações */}
-            <div className="flex flex-col space-y-3">
-              <Button asChild>
+            <div className="md:col-span-2 flex space-x-3 mt-6">
+              <Button asChild className="flex-1">
                 <Link href={`/books/${book.id}/edit`}>
                   <Edit className="mr-2 h-4 w-4" /> Editar Livro
                 </Link>
               </Button>
-              <DeleteBookDialog bookId={book.id} bookTitle={book.title} />
+              <div className="flex-1">
+                <DeleteBookDialog bookId={book.id} bookTitle={book.title} />
+              </div>
             </div>
           </div>
         </div>

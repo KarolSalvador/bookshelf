@@ -10,7 +10,7 @@ export async function saveBookAction(
   bookId: string | undefined,
   formData: FormData
 ) {
-  // 1. Extrair dados do FormData
+  //Extrair dados do FormData
   const data: Partial<Book> = {
     title: formData.get("title") as string,
     author: formData.get("author") as string,
@@ -22,7 +22,20 @@ export async function saveBookAction(
     synopsis: formData.get("synopsis") as string,
     cover: formData.get("cover") as string,
     notes: formData.get("notes") as string,
+    currentPage: Number(formData.get("currentPage")),
+    isbn: formData.get("isbn") as string,
   };
+
+  if (isNaN(data.year as number) || data.year === 0) delete data.year;
+  if (isNaN(data.pages as number) || data.pages === 0) delete data.pages;
+  if (isNaN(data.rating as number) || data.rating === 0) delete data.rating;
+
+  if (data.notes !== undefined && data.notes.trim() === "") delete data.notes;
+  if (!data.isbn || data.isbn.trim() === "") delete data.isbn;
+
+  if (isNaN(data.currentPage as number) || (data.currentPage as number) < 0) {
+    delete data.currentPage;
+  }
 
   if (!data.title || !data.author) {
     throw new Error("Título e autor são obrigatórios.");
@@ -31,10 +44,8 @@ export async function saveBookAction(
   let result: Book | undefined;
 
   if (bookId) {
-    // atualiza o livro se tiver
     result = bookService.updateBook(bookId, data);
   } else {
-    // se não tiver cria novo livro
     result = bookService.createBook(data as Omit<Book, "id">);
   }
 
@@ -44,12 +55,15 @@ export async function saveBookAction(
     );
   }
 
-  // Revalidação e Redirecionamento (Requisito: Revalidação e Redirect pós-ação)
+  // Revalida a página de detalhes do livro
   revalidatePath("/library");
+  revalidatePath(`/books/${result.id}`);
+  revalidatePath(`/books/${result.id}/edit`);
+
   redirect(`/books/${result.id}`);
 }
 
-//Remover um Livro
+// Remoção de Livro
 export async function deleteBookAction(id: string) {
   const wasDeleted = bookService.deleteBook(id);
 
@@ -57,9 +71,6 @@ export async function deleteBookAction(id: string) {
     throw new Error("Livro não encontrado para exclusão.");
   }
 
-  //Garante que a listagem seja atualizada
   revalidatePath("/library");
-
-  //Volta para a lista após a exclusão
   redirect("/library");
 }

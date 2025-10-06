@@ -37,8 +37,8 @@ export function Header() {
         {/* LADO DIREITO: Toggle de Tema e Botão */}
         <div className="flex items-center space-x-4">
           <ModeToggle />
-          <Button variant="secondary" size="sm">
-            Adicionar Livro
+          <Button variant="secondary" size="sm" asChild>
+            <Link href="/books/add">Adicionar Livro</Link>
           </Button>
         </div>
       </div>
