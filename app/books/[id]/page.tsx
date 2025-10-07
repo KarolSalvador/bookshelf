@@ -7,6 +7,8 @@ import { Star, Edit, ArrowLeft, BookOpen, Hash } from "lucide-react";
 import Link from "next/link";
 import { DeleteBookDialog } from "@/components/DeleteBookDialog";
 
+export const dynamic = "force-dynamic";
+
 async function getBookDetails(id: string): Promise<BookWithGenre | null> {
   return await bookService.getBookById(id);
 }

@@ -1,6 +1,8 @@
 import { ArrowLeft, PlusCircle } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 import BookForm from "@/components/forms/BookForm";
 import { Button } from "@/components/ui/button";
 import { genreService } from "@/lib/book-service";

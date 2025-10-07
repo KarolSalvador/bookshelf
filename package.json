@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma migrate deploy && npm run seed && prisma generate && next build && npm run copy:db",
+    "build": "next build && npm run copy:db",
     "start": "next start",
     "lint": "eslint",
     "prisma:seed": "node prisma/seed.cjs",
     "seed": "npm run prisma:seed",
-    "copy:db": "copyfiles --up 1 prisma/dev.db ./.next/standalone/prisma"
+    "copy:db": "copyfiles --up 1 prisma/dev.db ./.next/standalone/prisma",
+    "postinstall": "prisma migrate deploy && npm run seed && prisma generate"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

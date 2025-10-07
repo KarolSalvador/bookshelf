@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import BookCard from "@/components/BookCard";
 import Filters from "@/components/Filters";
 
+export const dynamic = "force-dynamic";
+
 interface LibraryPageProps {
   searchParams: {
     q?: string; // Termo de busca por título ou autor

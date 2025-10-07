@@ -3,6 +3,8 @@ import { Book, CheckCircle, Clock, Hash, TrendingUp } from "lucide-react";
 import { bookService } from "@/lib/book-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+export const dynamic = "force-dynamic";
+
 // Função para buscar dados (simulando uma chamada de API)
 async function getDashboardStats() {
   const books = await bookService.getBooks();
