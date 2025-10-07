@@ -18,6 +18,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type FormBookData = {
+  id?: string;
+  title?: string;
+  author?: string;
+  year: number;
+  pages: number;
+  rating: number;
+  currentPage: number;
+  genre: string;
+  isbn: string;
+  notes: string;
+  status: ReadingStatus;
+  synopsis: string;
+  cover: string;
+};
+
 function Progress({ value }: { value: number }) {
   const normalizedValue = Math.min(100, Math.max(0, value));
   return (
@@ -59,7 +75,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
   const initialGenre = initialData?.genre?.name || initialData?.genreId || "";
 
   const [coverUrl, setCoverUrl] = React.useState(initialData?.cover || "");
-  const [formData, setFormData] = React.useState<any>({
+  const [formData, setFormData] = React.useState<FormBookData>({
     ...initialData,
     year: initialData?.year || new Date().getFullYear(),
     pages: initialData?.pages || 0,
@@ -84,7 +100,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
   }, [formData]);
 
   // Lógica para calcular o progresso do preenchimento
-  const calculateProgress = (currentData: any) => {
+  const calculateProgress = (currentData: FormBookData) => {
     // Campos considerados para cálculo de progresso
     const allFields = [
       "title",
@@ -104,7 +120,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
     const totalFields = allFields.length;
 
     allFields.forEach((field) => {
-      const value = currentData[field];
+      const value = currentData[field as keyof FormBookData];
       if (typeof value === "string" && value.trim() !== "") {
         filledCount++;
       } else if (typeof value === "number" && !isNaN(value) && value !== 0) {
@@ -127,7 +143,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
 
     const { name, value } = target;
 
-    setFormData((prev: any) => {
+    setFormData((prev: FormBookData) => {
       let newValue: string | number = value;
       // Converte para Number apenas os campos numéricos
       if (["year", "pages", "rating", "currentPage"].includes(name)) {
@@ -151,7 +167,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
 
   // Handler específico para o componente Select
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev: any) => {
+    setFormData((prev: FormBookData) => {
       const updatedData = {
         ...prev,
         [name]: value,

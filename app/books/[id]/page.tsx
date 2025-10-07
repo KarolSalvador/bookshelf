@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { bookService, BookWithGenre } from "@/lib/book-service";
-import { ReadingStatus } from "@/lib/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Edit, ArrowLeft, BookOpen, Hash } from "lucide-react";

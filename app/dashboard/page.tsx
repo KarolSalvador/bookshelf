@@ -1,6 +1,6 @@
 // app/dashboard/page.tsx
 import { Book, CheckCircle, Clock, Hash, TrendingUp } from "lucide-react";
-import { BookWithGenre, bookService } from "@/lib/book-service";
+import { bookService } from "@/lib/book-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Função para buscar dados (simulando uma chamada de API)

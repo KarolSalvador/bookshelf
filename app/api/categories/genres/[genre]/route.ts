@@ -21,7 +21,7 @@ export async function DELETE(request: Request, context: Context) {
     }
     //status 204 de excluão bem sucedida
     return new NextResponse(null, { status: 204 });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { message: "Erro ao remover gênero." },
       { status: 500 }

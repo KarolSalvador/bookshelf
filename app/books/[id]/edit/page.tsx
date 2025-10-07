@@ -28,7 +28,7 @@ export default async function EditBookPage({
     notFound();
   }
 
-  const initialData = book as any;
+  const initialData = book as BookWithGenre;
 
   return (
     <div className="space-y-6">

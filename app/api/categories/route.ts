@@ -8,7 +8,7 @@ export async function GET() {
 
     //retorna lista dos generos com status 200 (OK)
     return NextResponse.json(genres, { status: 200 });
-  } catch (error) {
+  } catch (_error) {
     //retorna erro 500 em caso de falha
     return NextResponse.json(
       { message: "Erro ao listar gêneros." },
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     const updatedGenres = await genreService.addGenre(name.trim());
     return NextResponse.json(updatedGenres, { status: 201 });
-  } catch (error) {
+  } catch (_error) {
     NextResponse.json(
       { message: "Erro ao adicionar novo gênero." },
       { status: 500 }
