@@ -1,4 +1,3 @@
-// app/books/add/page.tsx
 import { ArrowLeft, PlusCircle } from "lucide-react";
 import Link from "next/link";
 
@@ -8,7 +7,7 @@ import { genreService } from "@/lib/book-service";
 
 // Função para buscar os gêneros no servidor (usando o serviço diretamente)
 async function fetchGenres() {
-  return genreService.getGenres();
+  return await genreService.getGenres();
 }
 
 export default async function AddBookPage() {

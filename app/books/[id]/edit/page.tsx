@@ -1,17 +1,16 @@
 import { notFound } from "next/navigation";
 import { ArrowLeft, Edit } from "lucide-react";
 import Link from "next/link";
-import { Book } from "@/lib/types";
+import { BookWithGenre, genreService, bookService } from "@/lib/book-service";
 import BookForm from "@/components/forms/BookForm";
 import { Button } from "@/components/ui/button";
-import { genreService, bookService } from "@/lib/book-service";
 
 async function fetchGenres() {
-  return genreService.getGenres();
+  return await genreService.getGenres();
 }
 
-async function fetchBook(id: string): Promise<Book | undefined> {
-  return bookService.getBookById(id);
+async function fetchBook(id: string): Promise<BookWithGenre | null> {
+  return await bookService.getBookById(id);
 }
 
 export default async function EditBookPage({
@@ -28,6 +27,8 @@ export default async function EditBookPage({
   if (!book) {
     notFound();
   }
+
+  const initialData = book as any;
 
   return (
     <div className="space-y-6">
@@ -46,7 +47,7 @@ export default async function EditBookPage({
 
       <div className="max-w-3xl">
         {/* O formulário recebe o objeto 'book' para pré-preenchimento */}
-        <BookForm initialData={book} genres={genres} />
+        <BookForm initialData={initialData} genres={genres} />
       </div>
     </div>
   );
