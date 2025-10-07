@@ -1,8 +1,7 @@
 // app/library/page.tsx
 import { BookOpen, PlusCircle } from "lucide-react";
 import Link from "next/link";
-
-import { Book } from "@/lib/types";
+import { BookWithGenre, bookService, genreService } from "@/lib/book-service";
 import { Button } from "@/components/ui/button";
 import BookCard from "@/components/BookCard";
 import Filters from "@/components/Filters";
@@ -15,13 +14,15 @@ interface LibraryPageProps {
 }
 
 // Função para buscar dados e aplicar filtros no servidor
-async function getFilteredBooks(q?: string, genre?: string): Promise<Book[]> {
-  const { bookService } = await import("@/lib/book-service");
-  let books = bookService.getBooks();
+async function getFilteredBooks(
+  q?: string,
+  genre?: string
+): Promise<BookWithGenre[]> {
+  let books = await bookService.getBooks();
 
   //Filtrar por Gênero
   if (genre && genre !== "all") {
-    books = books.filter((book) => book.genre === genre);
+    books = books.filter((book) => book.genre.name === genre);
   }
 
   // Filtrar por Termo de Busca (Título ou Autor)
@@ -39,8 +40,7 @@ async function getFilteredBooks(q?: string, genre?: string): Promise<Book[]> {
 
 // Função para buscar os gêneros disponíveis
 async function fetchGenres() {
-  const { genreService } = await import("@/lib/book-service");
-  return genreService.getGenres();
+  return await genreService.getGenres();
 }
 
 export default async function LibraryPage({ searchParams }: LibraryPageProps) {
@@ -54,7 +54,9 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
     <div className="space-y-8">
       {/* HEADER DA PÁGINA */}
       <div className="flex justify-between items-center">
-        <h1 className=" text-base sm:text-3xl font-bold tracking-tight">Sua Biblioteca</h1>
+        <h1 className=" text-base sm:text-3xl font-bold tracking-tight">
+          Sua Biblioteca
+        </h1>
         <Button asChild>
           <Link href="/books/add">
             <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Novo Livro
