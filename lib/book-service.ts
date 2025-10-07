@@ -1,6 +1,5 @@
 import { Prisma, ReadingStatus, Book as PrismaBook } from "./generated/prisma";
 import { prisma } from "./prisma";
-import { Book } from "./types";
 
 type bookData = Omit<
   Prisma.BookCreateInput,
@@ -53,7 +52,7 @@ async function getBookById(id: string): Promise<BookWithGenre | null> {
 //Simular atualização de um livro, sobreescrever os campos alterados
 async function updateBook(
   id: string,
-  updatedFields: Partial<Book>
+  updatedFields: Partial<bookData>
 ): Promise<PrismaBook | null> {
   const { genre: genreName, ...data } = updatedFields;
 
