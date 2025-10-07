@@ -47,7 +47,7 @@ model Book {
 
   status       ReadingStatus     @default(QUERO_LER)
 
-  genreID      String
+  genreId      String
   genre        Genre             @relation(fields: [genreId], references: [name])
 
   @@index([genreId])
