@@ -10,6 +10,7 @@ type bookData = Omit<
 };
 
 export type BookWithGenre = PrismaBook & { genre: { name: string } };
+export { ReadingStatus };
 
 //Criação de livro
 async function createBook(bookData: bookData): Promise<PrismaBook> {

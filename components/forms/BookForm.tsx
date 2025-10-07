@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { useFormStatus } from "react-dom";
-import { Book, ReadingStatus } from "@/lib/types";
+import { BookWithGenre, ReadingStatus } from "@/lib/book-service";
 import { saveBookAction } from "@/lib/actions"; // Importa a Server Action
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,7 +31,7 @@ function Progress({ value }: { value: number }) {
 }
 
 interface BookFormProps {
-  initialData?: Book; // Dados para pré-preenchimento em modo de edição
+  initialData?: BookWithGenre; // Dados para pré-preenchimento em modo de edição
   genres: string[];
 }
 
@@ -56,18 +56,35 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
   // O id é opcional na criação, mas necessário na edição
   const bookId = initialData?.id;
 
+  const initialGenre = initialData?.genre?.name || initialData?.genreId || "";
+
   const [coverUrl, setCoverUrl] = React.useState(initialData?.cover || "");
-  const [formData, setFormData] = React.useState<Partial<Book>>(
-    initialData || {}
-  );
+  const [formData, setFormData] = React.useState<any>({
+    ...initialData,
+    year: initialData?.year || new Date().getFullYear(),
+    pages: initialData?.pages || 0,
+    rating: initialData?.rating || 0,
+    currentPage: initialData?.currentPage || 0,
+    genre: initialGenre,
+    isbn: initialData?.isbn || "",
+    notes: initialData?.notes || "",
+    status: initialData?.status || "QUERO_LER",
+    synopsis: initialData?.synopsis || "",
+    cover: initialData?.cover || "",
+  });
+
   const [formProgress, setFormProgress] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
 
   // Hook para usar a Server Action com binding do ID
   const boundSaveAction = saveBookAction.bind(null, bookId);
 
+  React.useEffect(() => {
+    calculateProgress(formData);
+  }, [formData]);
+
   // Lógica para calcular o progresso do preenchimento
-  const calculateProgress = (currentData: Partial<Book>) => {
+  const calculateProgress = (currentData: any) => {
     // Campos considerados para cálculo de progresso
     const allFields = [
       "title",
@@ -87,7 +104,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
     const totalFields = allFields.length;
 
     allFields.forEach((field) => {
-      const value = currentData[field as keyof Book];
+      const value = currentData[field];
       if (typeof value === "string" && value.trim() !== "") {
         filledCount++;
       } else if (typeof value === "number" && !isNaN(value) && value !== 0) {
@@ -110,7 +127,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
 
     const { name, value } = target;
 
-    setFormData((prev) => {
+    setFormData((prev: any) => {
       let newValue: string | number = value;
       // Converte para Number apenas os campos numéricos
       if (["year", "pages", "rating", "currentPage"].includes(name)) {
@@ -121,8 +138,8 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
       const updatedData = {
         ...prev,
         [name]: newValue,
-      } as Partial<Book>;
-
+      };
+      calculateProgress(updatedData);
       return updatedData;
     });
 
@@ -134,7 +151,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
 
   // Handler específico para o componente Select
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => {
+    setFormData((prev: any) => {
       const updatedData = {
         ...prev,
         [name]: value,
@@ -178,6 +195,8 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
     "ABANDONADO",
   ];
 
+  const maxCurrentPage = formData.pages > 0 ? formData.pages : undefined;
+
   return (
     <form
       action={handleSubmitWrapper}
@@ -210,7 +229,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             id="title"
             name="title"
             required
-            defaultValue={initialData?.title}
+            defaultValue={initialData?.title ?? ""}
           />
         </div>
         <div className="space-y-2">
@@ -219,7 +238,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             id="author"
             name="author"
             required
-            defaultValue={initialData?.author}
+            defaultValue={initialData?.author ?? ""}
           />
         </div>
       </div>
@@ -231,7 +250,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
           {/* Componente Select para Gêneros */}
           <Select
             name="genre"
-            defaultValue={initialData?.genre}
+            defaultValue={initialGenre}
             onValueChange={(value) => handleSelectChange("genre", value)}
           >
             <SelectTrigger>
@@ -261,7 +280,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             id="pages"
             name="pages"
             type="number"
-            defaultValue={initialData?.pages}
+            defaultValue={initialData?.pages ?? ""}
           />
         </div>
 
@@ -271,7 +290,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             id="isbn"
             name="isbn"
             type="text"
-            defaultValue={initialData?.isbn}
+            defaultValue={initialData?.isbn ?? ""}
           />
         </div>
       </div>
@@ -307,7 +326,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             type="number"
             min="1"
             max="5"
-            defaultValue={initialData?.rating}
+            defaultValue={initialData?.rating ?? ""}
           />
         </div>
 
@@ -347,7 +366,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             id="synopsis"
             name="synopsis"
             rows={4}
-            defaultValue={initialData?.synopsis}
+            defaultValue={initialData?.synopsis ?? ""}
           />
         </div>
         <div className="space-y-2">
@@ -356,7 +375,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
             id="cover"
             name="cover"
             type="url"
-            defaultValue={initialData?.cover}
+            defaultValue={initialData?.cover ?? ""}
           />
           <div className="relative w-full aspect-[2/3] bg-muted rounded-md overflow-hidden border mt-4">
             {coverUrl ? (
@@ -383,7 +402,7 @@ export default function BookForm({ initialData, genres }: BookFormProps) {
           id="notes"
           name="notes"
           rows={3}
-          defaultValue={initialData?.notes}
+          defaultValue={initialData?.notes ?? ""}
         />
       </div>
 
