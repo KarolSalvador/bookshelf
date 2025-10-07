@@ -1,64 +1,102 @@
-import { initialBooks, initialGenres } from "./data";
-import { Book, ReadingStatus } from "./types";
+import { Prisma, ReadingStatus, Book as PrismaBook } from "./generated/prisma";
+import { prisma } from "./prisma";
+import { Book } from "./types";
 
-const globalState = global as typeof global & {
-  bookStore?: Book[];
-  genreStore?: string[];
+type bookData = Omit<
+  Prisma.BookCreateInput,
+  "id" | "createdAt" | "updatedAt" | "genre"
+> & {
+  genre: string;
+  status: ReadingStatus;
 };
 
-if (!globalState.bookStore) {
-  globalState.bookStore = [...initialBooks];
-}
-// A variável local 'bookStore' agora referencia o array persistente
-let bookStore: Book[] = globalState.bookStore;
+export type BookWithGenre = PrismaBook & { genre: { name: string } };
 
-// A mesma lógica para genres
-if (!globalState.genreStore) {
-  globalState.genreStore = [...initialGenres, "Realismo Mágico"];
-}
-let genreStore: string[] = globalState.genreStore;
+//Criação de livro
+async function createBook(bookData: bookData): Promise<PrismaBook> {
+  const { genre: genreName, ...data } = bookData;
 
-//Simular adição de um novo livro
-function createBook(bookData: Omit<Book, "id">): Book {
-  const newBook: Book = {
-    id: Date.now().toString(),
-    ...bookData,
-    status: bookData.status || ("QUERO_LER" as ReadingStatus),
-    currentPage: bookData.currentPage || 0,
-  };
-  bookStore.push(newBook);
-  return newBook;
+  return prisma.book.create({
+    data: {
+      ...data,
+      genre: {
+        connect: { name: genreName },
+      },
+    },
+  });
 }
 
 //Simular busca e listagem de todos os livros
-function getBooks(): Book[] {
-  return [...bookStore];
+async function getBooks(): Promise<BookWithGenre[]> {
+  const books = await prisma.book.findMany({
+    include: {
+      genre: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return books as BookWithGenre[];
 }
 
 //Simular busca de livro por ID
-function getBookById(id: string): Book | undefined {
-  return bookStore.find((book) => book.id === id);
+async function getBookById(id: string): Promise<BookWithGenre | null> {
+  const book = await prisma.book.findUnique({
+    where: { id },
+    include: {
+      genre: true,
+    },
+  });
+  return book as BookWithGenre | null;
 }
 
 //Simular atualização de um livro, sobreescrever os campos alterados
-function updateBook(
+async function updateBook(
   id: string,
   updatedFields: Partial<Book>
-): Book | undefined {
-  const index = bookStore.findIndex((book) => book.id === id);
-  if (index !== -1) {
-    bookStore[index] = { ...bookStore[index], ...updatedFields };
-    return bookStore[index];
+): Promise<PrismaBook | null> {
+  const { genre: genreName, ...data } = updatedFields;
+
+  const updateData: Prisma.BookUpdateInput = {
+    ...data,
+  };
+
+  if (genreName) {
+    updateData.genre = {
+      connect: { name: genreName },
+    };
   }
-  return undefined;
+
+  try {
+    return await prisma.book.update({
+      where: { id },
+      data: updateData,
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 //Simular remoção do livro, filtrar e remover livro com id correspondente, retornar com o livro removido
-function deleteBook(id: string): boolean {
-  const initialLength = bookStore.length;
-  bookStore = bookStore.filter((book) => book.id !== id);
-  globalState.bookStore = bookStore;
-  return bookStore.length < initialLength;
+async function deleteBook(id: string): Promise<boolean> {
+  try {
+    await prisma.book.delete({ where: { id } });
+    return true;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return false;
+    }
+    throw error;
+  }
 }
 
 //Exporta as funções para uso na API Routes e Server Actions
@@ -72,24 +110,39 @@ export const bookService = {
 
 //Adiciona gênero usado nos dados iniciais
 
-function getGenres(): string[] {
-  return [...genreStore].sort();
+async function getGenres(): Promise<string[]> {
+  const genres = await prisma.genre.findMany({
+    orderBy: { name: "asc" },
+  });
+  return genres.map((g) => g.name);
 }
 
-function addGenre(genre: string): string[] {
+async function addGenre(genre: string): Promise<string[]> {
   const capitalizedGenre =
     genre.charAt(0).toUpperCase() + genre.slice(1).toLocaleLowerCase();
-  if (!genreStore.includes(capitalizedGenre)) {
-    genreStore.push(capitalizedGenre);
-  }
+
+  await prisma.genre.upsert({
+    where: { name: capitalizedGenre },
+    update: {},
+    create: { name: capitalizedGenre },
+  });
+
   return getGenres();
 }
 
-function deleteGenre(genre: string): boolean {
-  const initialLength = genreStore.length;
-  genreStore = genreStore.filter((g) => g !== genre);
-  globalState.genreStore = genreStore;
-  return genreStore.length < initialLength;
+async function deleteGenre(genre: string): Promise<boolean> {
+  try {
+    await prisma.genre.delete({ where: { name: genre } });
+    return true;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return false;
+    }
+    throw error;
+  }
 }
 
 export const genreService = {
