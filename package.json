@@ -9,7 +9,7 @@
     "lint": "eslint",
     "prisma:seed": "node prisma/seed.cjs",
     "seed": "npm run prisma:seed",
-    "copy:db": "copyfiles --up 1 prisma/dev.db ./.next/standalone/prisma",
+    "copy:db": "copyfiles --up 1 prisma/dev.db ./.next/standalone",
     "postinstall": "prisma migrate deploy && npm run seed && prisma generate"
   },
   "dependencies": {

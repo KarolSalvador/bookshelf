@@ -5,13 +5,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL || "file:./prisma/dev.db";
 let resolvedDatabaseUrl = DATABASE_URL;
 
-if (resolvedDatabaseUrl && resolvedDatabaseUrl.startsWith("file:")) {
-  const relativePath = resolvedDatabaseUrl.replace("file:", "");
-
-  const absolutePath = path.join(process.cwd(), relativePath);
+if (resolvedDatabaseUrl.startsWith("file:")) {
+  const filename = path.basename(resolvedDatabaseUrl);
+  const absolutePath = path.join(process.cwd(), filename);
 
   resolvedDatabaseUrl = `file:${absolutePath}`;
 }
