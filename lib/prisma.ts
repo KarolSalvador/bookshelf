@@ -23,7 +23,11 @@ export const prisma =
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
-    ...(databaseUrl && { datasources: { db: { url: databaseUrl } } }),
+    datasources: {
+      db: {
+        url: databaseUrl,
+      },
+    },
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
