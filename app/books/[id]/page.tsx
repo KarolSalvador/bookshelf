@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Book, ReadingStatus } from "@/lib/types";
+import { bookService, BookWithGenre } from "@/lib/book-service";
+import { ReadingStatus } from "@/lib/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Edit, ArrowLeft, BookOpen, Hash } from "lucide-react";
 import Link from "next/link";
 import { DeleteBookDialog } from "@/components/DeleteBookDialog";
 
-async function getBookDetails(id: string): Promise<Book | undefined> {
-  const { bookService } = await import("@/lib/book-service");
-  return bookService.getBookById(id);
+async function getBookDetails(id: string): Promise<BookWithGenre | null> {
+  return await bookService.getBookById(id);
 }
 
 const renderStars = (rating: number) => {
@@ -36,10 +36,16 @@ export default async function BookDetailsPage({
     notFound();
   }
 
+  const totalPages = book.pages ?? 0;
+  const pagesRead = book.currentPage ?? 0;
+
   const readingProgress =
-    book.pages > 0 && book.currentPage > 0
-      ? Math.round((book.currentPage / book.pages) * 100)
+    totalPages > 0 && pagesRead > 0
+      ? Math.round((pagesRead / totalPages) * 100)
       : 0;
+
+  const genreName = book.genre?.name || book.genreId;
+  const bookRating = book.rating ?? 0;
 
   return (
     <div className="space-y-8">
@@ -95,14 +101,14 @@ export default async function BookDetailsPage({
             <div className="space-y-3">
               <p>
                 <strong>Gênero:</strong>{" "}
-                <Badge variant="outline">{book.genre}</Badge>
+                <Badge variant="outline">{genreName}</Badge>
               </p>
               <p>
                 <strong>Ano:</strong> {book.year}
               </p>
               <div className="flex items-center">
                 <strong>Avaliação:</strong>
-                <span className="flex ml-2">{renderStars(book.rating)}</span>
+                <span className="flex ml-2">{renderStars(bookRating)}</span>
               </div>
               <div className="flex items-center">
                 <strong>Status:</strong>
@@ -129,8 +135,7 @@ export default async function BookDetailsPage({
                 Progresso de Leitura
               </h3>
               <p>
-                <strong>Páginas Lidas:</strong> {book.currentPage} /{" "}
-                {book.pages}
+                <strong>Páginas Lidas:</strong> {pagesRead} / {totalPages}
               </p>
               <p>
                 <strong>Progresso:</strong> {readingProgress}%
