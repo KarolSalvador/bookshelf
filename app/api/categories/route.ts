@@ -4,7 +4,7 @@ import { genreService } from "@/lib/book-service";
 export async function GET() {
   try {
     //buscar gêneros no serviço
-    const genres = genreService.getGenres();
+    const genres = await genreService.getGenres();
 
     //retorna lista dos generos com status 200 (OK)
     return NextResponse.json(genres, { status: 200 });
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const updatedGenres = genreService.addGenre(name.trim());
+    const updatedGenres = await genreService.addGenre(name.trim());
     return NextResponse.json(updatedGenres, { status: 201 });
   } catch (error) {
     NextResponse.json(

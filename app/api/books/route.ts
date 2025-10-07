@@ -1,12 +1,11 @@
 import { bookService } from "@/lib/book-service";
-import { Book } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 //método GET apra listar todos os livros
 export async function GET() {
   try {
     //busca os livros
-    const books = bookService.getBooks();
+    const books = await bookService.getBooks();
 
     //retorna lista de livros com status Ok
     return NextResponse.json(books, { status: 200 });
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     //cria novo livro
-    const newBook = bookService.createBook(data as Omit<Book, "id">);
+    const newBook = await bookService.createBook(data as any);
 
     //retorna livro criado com status created
     return NextResponse.json(newBook, { status: 201 });
