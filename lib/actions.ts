@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { bookService } from "./book-service";
-import { Book } from "./types";
 
 //Cria ou Atualiza um Livro
 export async function saveBookAction(
@@ -11,13 +10,13 @@ export async function saveBookAction(
   formData: FormData
 ) {
   //Extrair dados do FormData
-  const data: Partial<Book> = {
+  const data: any = {
     title: formData.get("title") as string,
     author: formData.get("author") as string,
     genre: formData.get("genre") as string,
     year: Number(formData.get("year")),
     pages: Number(formData.get("pages")),
-    status: formData.get("status") as Book["status"],
+    status: formData.get("status") as string,
     rating: Number(formData.get("rating")),
     synopsis: formData.get("synopsis") as string,
     cover: formData.get("cover") as string,
@@ -26,6 +25,7 @@ export async function saveBookAction(
     isbn: formData.get("isbn") as string,
   };
 
+  // Limpeza de dados: remove 0s ou valores inválidos para delegar a tipagem ao Prisma
   if (isNaN(data.year as number) || data.year === 0) delete data.year;
   if (isNaN(data.pages as number) || data.pages === 0) delete data.pages;
   if (isNaN(data.rating as number) || data.rating === 0) delete data.rating;
@@ -33,6 +33,7 @@ export async function saveBookAction(
   if (data.notes !== undefined && data.notes.trim() === "") delete data.notes;
   if (!data.isbn || data.isbn.trim() === "") delete data.isbn;
 
+  // Se a página atual for inválida ou negativa, remove para usar o default(0) no Prisma
   if (isNaN(data.currentPage as number) || (data.currentPage as number) < 0) {
     delete data.currentPage;
   }
@@ -41,12 +42,12 @@ export async function saveBookAction(
     throw new Error("Título e autor são obrigatórios.");
   }
 
-  let result: Book | undefined;
+  let result;
 
   if (bookId) {
-    result = bookService.updateBook(bookId, data);
+    result = await bookService.updateBook(bookId, data);
   } else {
-    result = bookService.createBook(data as Omit<Book, "id">);
+    result = await bookService.createBook(data);
   }
 
   if (!result) {
@@ -65,7 +66,7 @@ export async function saveBookAction(
 
 // Remoção de Livro
 export async function deleteBookAction(id: string) {
-  const wasDeleted = bookService.deleteBook(id);
+  const wasDeleted = await bookService.deleteBook(id);
 
   if (!wasDeleted) {
     throw new Error("Livro não encontrado para exclusão.");
