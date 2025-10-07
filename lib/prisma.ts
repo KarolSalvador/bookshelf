@@ -5,29 +5,29 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-let databaseUrl = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL;
+let resolvedDatabaseUrl = DATABASE_URL;
 
-if (databaseUrl && databaseUrl.startsWith("file:")) {
-  const relativePath = databaseUrl.replace("file:", "");
+if (resolvedDatabaseUrl && resolvedDatabaseUrl.startsWith("file:")) {
+  const relativePath = resolvedDatabaseUrl.replace("file:", "");
 
-  const absolutePath = path.resolve(relativePath);
+  const absolutePath = path.join(process.cwd(), relativePath);
 
-  databaseUrl = `file:${absolutePath}`;
+  resolvedDatabaseUrl = `file:${absolutePath}`;
 }
 
-//Criação d ainstância do Prisma Client
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
-    datasources: {
-      db: {
-        url: databaseUrl,
-      },
+const prismaConfig = {
+  log: (process.env.NODE_ENV === "development"
+    ? ["query", "error", "warn"]
+    : ["error"]) as ("query" | "error" | "warn")[],
+  datasources: {
+    db: {
+      url: resolvedDatabaseUrl,
     },
-  });
+  },
+};
+
+//Criação d ainstância do Prisma Client
+export const prisma = globalForPrisma.prisma ?? new PrismaClient(prismaConfig);
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
