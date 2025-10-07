@@ -3,7 +3,7 @@ import type {
   Book as PrismaBookModel,
   ReadingStatus as PrismaReadingStatusEnum,
   Prisma as PrismaNamespace, // Alias para o namespace completo de tipos
-} from "@prisma/client";
+} from "./generated/prisma";
 import { prisma } from "./prisma";
 
 type PrismaBook = PrismaBookModel;
