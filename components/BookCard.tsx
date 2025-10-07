@@ -2,7 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Book } from "@/lib/types";
+import { BookWithGenre } from "@/lib/book-service";
 import { Badge } from "@/components/ui/badge";
 import { Star, Eye, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/card";
 
 interface BookCardProps {
-  book: Book;
+  book: BookWithGenre;
 }
 
 const renderStars = (rating: number) => {
@@ -35,6 +35,9 @@ const renderStars = (rating: number) => {
 };
 
 export default function BookCard({ book }: BookCardProps) {
+  const bookRating = book.rating ?? 0;
+  const genreName = book.genre?.name || book.genreId;
+
   return (
     <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg p-0">
       <CardHeader className="p-0 relative aspect-[3/3] bg-muted">
@@ -74,8 +77,6 @@ export default function BookCard({ book }: BookCardProps) {
             {book.status}
           </Badge>
         )}
-
-        
       </CardHeader>
 
       <CardContent className="p-2 flex-grow space-y-1">
@@ -90,10 +91,10 @@ export default function BookCard({ book }: BookCardProps) {
         {/* Avaliação e Gênero*/}
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center space-x-1">
-            {renderStars(book.rating)}
+            {renderStars(bookRating)}
           </div>
           <Badge variant="outline" className="text-xs">
-            {book.genre}
+            {genreName}
           </Badge>
         </div>
       </CardContent>
