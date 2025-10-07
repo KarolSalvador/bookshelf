@@ -1,16 +1,24 @@
-import { Prisma, ReadingStatus, Book as PrismaBook } from "./generated/prisma";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import type {
+  Book as PrismaBookModel,
+  ReadingStatus as PrismaReadingStatusEnum,
+  Prisma as PrismaNamespace, // Alias para o namespace completo de tipos
+} from "@prisma/client";
 import { prisma } from "./prisma";
 
+type PrismaBook = PrismaBookModel;
+type ReadingStatus = PrismaReadingStatusEnum;
+
 type bookData = Omit<
-  Prisma.BookCreateInput,
+  PrismaNamespace.BookCreateInput,
   "id" | "createdAt" | "updatedAt" | "genre"
 > & {
   genre: string;
   status: ReadingStatus;
 };
 
+export type { ReadingStatus };
 export type BookWithGenre = PrismaBook & { genre: { name: string } };
-export { ReadingStatus };
 
 //Criação de livro
 async function createBook(bookData: bookData): Promise<PrismaBook> {
@@ -57,7 +65,7 @@ async function updateBook(
 ): Promise<PrismaBook | null> {
   const { genre: genreName, ...data } = updatedFields;
 
-  const updateData: Prisma.BookUpdateInput = {
+  const updateData: PrismaNamespace.BookUpdateInput = {
     ...data,
   };
 
@@ -74,7 +82,7 @@ async function updateBook(
     });
   } catch (error) {
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       return null;
@@ -90,7 +98,7 @@ async function deleteBook(id: string): Promise<boolean> {
     return true;
   } catch (error) {
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       return false;
@@ -136,7 +144,7 @@ async function deleteGenre(genre: string): Promise<boolean> {
     return true;
   } catch (error) {
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       return false;
