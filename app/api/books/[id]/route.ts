@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import { bookService } from "@/lib/book-service";
-import { Book } from "@/lib/types";
 
 interface RouteContext {
   params: { id: string };
@@ -10,7 +9,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
   const id = context.params.id;
 
   try {
-    const book = bookService.getBookById(id);
+    const book = await bookService.getBookById(id);
 
     if (!book) {
       return NextResponse.json(
@@ -40,7 +39,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
         { status: 400 }
       );
     }
-    const updatedBook = bookService.updateBook(id, data as Partial<Book>);
+    const updatedBook = await bookService.updateBook(id, data as any);
 
     if (!updatedBook) {
       return NextResponse.json(
@@ -61,7 +60,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   const id = context.params.id;
 
   try {
-    const wasDeleted = bookService.deleteBook(id);
+    const wasDeleted = await bookService.deleteBook(id);
     if (!wasDeleted) {
       return NextResponse.json(
         { message: "Livro não encontrado para remoção" },
