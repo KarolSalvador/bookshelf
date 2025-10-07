@@ -12,9 +12,9 @@ export async function DELETE(request: Request, context: Context) {
   const decodeGenre = decodeURIComponent(genre);
 
   try {
-    const wasDeleted = genreService.deleteGenre(decodeGenre);
+    const wasDeleted = await genreService.deleteGenre(decodeGenre);
     if (!wasDeleted) {
-      NextResponse.json(
+      return NextResponse.json(
         { message: `Gênero ${decodeGenre} não encontrado para remoção.` },
         { status: 404 }
       );
