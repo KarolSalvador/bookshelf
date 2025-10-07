@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { bookService } from "./book-service";
+import { bookService, bookData, ReadingStatus } from "./book-service";
 
 //Cria ou Atualiza um Livro
 export async function saveBookAction(
@@ -10,13 +10,13 @@ export async function saveBookAction(
   formData: FormData
 ) {
   //Extrair dados do FormData
-  const data: any = {
+  const data: Partial<bookData> = {
     title: formData.get("title") as string,
     author: formData.get("author") as string,
     genre: formData.get("genre") as string,
     year: Number(formData.get("year")),
     pages: Number(formData.get("pages")),
-    status: formData.get("status") as string,
+    status: formData.get("status") as ReadingStatus,
     rating: Number(formData.get("rating")),
     synopsis: formData.get("synopsis") as string,
     cover: formData.get("cover") as string,
@@ -30,8 +30,8 @@ export async function saveBookAction(
   if (isNaN(data.pages as number) || data.pages === 0) delete data.pages;
   if (isNaN(data.rating as number) || data.rating === 0) delete data.rating;
 
-  if (data.notes !== undefined && data.notes.trim() === "") delete data.notes;
-  if (!data.isbn || data.isbn.trim() === "") delete data.isbn;
+  if (data.notes?.trim() === "") delete data.notes;
+  if (data.isbn?.trim() === "") delete data.isbn;
 
   // Se a página atual for inválida ou negativa, remove para usar o default(0) no Prisma
   if (isNaN(data.currentPage as number) || (data.currentPage as number) < 0) {
@@ -47,7 +47,7 @@ export async function saveBookAction(
   if (bookId) {
     result = await bookService.updateBook(bookId, data);
   } else {
-    result = await bookService.createBook(data);
+    result = await bookService.createBook(data as bookData);
   }
 
   if (!result) {

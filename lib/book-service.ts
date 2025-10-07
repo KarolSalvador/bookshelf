@@ -17,7 +17,7 @@ type bookData = Omit<
   status: ReadingStatus;
 };
 
-export type { ReadingStatus };
+export type { ReadingStatus, bookData };
 export type BookWithGenre = PrismaBook & { genre: { name: string } };
 
 //Criação de livro

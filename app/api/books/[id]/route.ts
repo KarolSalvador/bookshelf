@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { bookService } from "@/lib/book-service";
+import { bookService, bookData } from "@/lib/book-service";
 
 interface RouteContext {
   params: { id: string };
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     return NextResponse.json(book, { status: 200 });
-  } catch (_) {
+  } catch (error: unknown) {
     return NextResponse.json(
       { message: "Erro ao buscar detalhes do livro." },
       { status: 500 }
@@ -31,7 +31,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   const id = context.params.id;
 
   try {
-    const data = await request.json();
+    const data = (await request.json()) as Partial<bookData>;
 
     if (!data || Object.keys(data).length === 0) {
       return NextResponse.json(
@@ -39,7 +39,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
         { status: 400 }
       );
     }
-    const updatedBook = await bookService.updateBook(id, data as any);
+    const updatedBook = await bookService.updateBook(id, data);
 
     if (!updatedBook) {
       return NextResponse.json(
@@ -48,7 +48,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       );
     }
     return NextResponse.json(updatedBook, { status: 200 });
-  } catch (_) {
+  } catch (error: unknown) {
     return NextResponse.json(
       { message: "Erro ao atualizar livro." },
       { status: 500 }
@@ -70,7 +70,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
     //status 204 de excluão bem sucedida
     return new NextResponse(null, { status: 204 });
-  } catch (_) {
+  } catch (error: unknown) {
     return NextResponse.json(
       { message: "Erro ao remover livro." },
       { status: 500 }
