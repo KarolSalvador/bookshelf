@@ -1,12 +1,11 @@
 // app/dashboard/page.tsx
 import { Book, CheckCircle, Clock, Hash, TrendingUp } from "lucide-react";
-import { Book as BookType } from "@/lib/types";
+import { BookWithGenre, bookService } from "@/lib/book-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Função para buscar dados (simulando uma chamada de API)
 async function getDashboardStats() {
-  const { bookService } = await import("@/lib/book-service");
-  const books = bookService.getBooks();
+  const books = await bookService.getBooks();
 
   // 1. Calcular Estatísticas
   const totalBooks = books.length;
@@ -16,7 +15,7 @@ async function getDashboardStats() {
   // 2. Calcular Páginas Lidas (simulação: se o status é LIDO, conta todas as páginas)
   const totalPagesRead = books
     .filter((b) => b.status === "LIDO")
-    .reduce((sum, book) => sum + book.pages, 0);
+    .reduce((sum, book) => sum + (book.pages ?? 0), 0);
 
   return {
     totalBooks,
