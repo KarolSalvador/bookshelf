@@ -1,27 +1,4 @@
-export type ReadingStatus =
-  | "QUERO_LER"
-  | "LENDO"
-  | "LIDO"
-  | "PAUSADO"
-  | "ABANDONADO";
-
-export interface Book {
-  id: string;
-  title: string;
-  author: string;
-  genre: string;
-  year: number;
-  pages: number;
-  rating: number;
-  synopsis: string;
-  cover: string;
-  status: ReadingStatus;
-  notes?: string;
-  currentPage: number;
-  isbn?: string;
-}
-
-export const initialGenres: string[] = [
+const initialGenres = [
   "Ficção Científica",
   "Fantasia",
   "Romance",
@@ -31,8 +8,7 @@ export const initialGenres: string[] = [
   "Psicologia",
   "Filosofia",
 ];
-
-export const initialBooks: Book[] = [
+const initialBooks = [
   {
     id: "b1",
     title: "A Estrada",
@@ -44,7 +20,7 @@ export const initialBooks: Book[] = [
     synopsis:
       "Um pai e seu filho viajam por uma paisagem pós-apocalíptica, devastada e fria. A jornada é uma luta constante pela sobrevivência e pela preservação da humanidade.",
     cover: "https://m.media-amazon.com/images/I/81sv0MNR-LL._SY425_.jpg",
-    status: "LIDO" as ReadingStatus,
+    status: "LIDO",
     notes:
       "Um livro sombrio e emocionante sobre esperança em meio ao desespero.",
     currentPage: 300, // Adicionando currentPage
@@ -60,7 +36,7 @@ export const initialBooks: Book[] = [
     synopsis:
       "Mesmo um código ruim pode funcionar. Mas se ele não for limpo, pode acabar com um projeto de desenvolvimento. Este livro é um manual para a escrita de software elegante e eficaz.",
     cover: "https://m.media-amazon.com/images/I/71dH97FwGbL._SY385_.jpg",
-    status: "LENDO" as ReadingStatus,
+    status: "LENDO",
     currentPage: 150, // Adicionando currentPage
   },
   {
@@ -74,7 +50,7 @@ export const initialBooks: Book[] = [
     synopsis:
       "A história da família Buendía na aldeia de Macondo, uma obra-prima que mistura fantasia e realidade histórica.",
     cover: "https://m.media-amazon.com/images/I/817esPahlrL._SY425_.jpg",
-    status: "QUERO_LER" as ReadingStatus,
+    status: "QUERO_LER",
     currentPage: 0, // Adicionando currentPage
   },
   {
@@ -89,7 +65,7 @@ export const initialBooks: Book[] = [
       "Uma análise fascinante sobre a história da humanidade, desde a Idade da Pedra até os dias atuais, explorando como o Homo Sapiens conseguiu dominar o planeta.",
     cover:
       "https://m.media-amazon.com/images/I/51fuvXO6wvL._SY445_SX342_ControlCacheEqualizer_.jpg",
-    status: "PAUSADO" as ReadingStatus,
+    status: "PAUSADO",
     currentPage: 250, // Adicionando currentPage
   },
   {
@@ -103,7 +79,12 @@ export const initialBooks: Book[] = [
     synopsis:
       "O início da épica jornada para destruir o Um Anel, reunindo a Sociedade e enfrentando as forças do mal.",
     cover: "https://m.media-amazon.com/images/I/81hCVEC0ExL._SY425_.jpg",
-    status: "LIDO" as ReadingStatus,
+    status: "LIDO",
     currentPage: 423, // Adicionando currentPage
   },
 ];
+
+module.exports = {
+  initialBooks,
+  initialGenres,
+};

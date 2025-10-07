@@ -1,5 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import { initialBooks, initialGenres } from "./seed-data";
+const { PrismaClient } = require("../lib/generated/prisma");
+const seedData = require("./seed-data.cjs");
+
+const initialBooks = seedData.initialBooks;
+const initialGenres = seedData.initialGenres;
 
 const prisma = new PrismaClient();
 
@@ -7,8 +10,17 @@ const prisma = new PrismaClient();
 async function main() {
   console.log(`Iniciando o seeding...`);
 
-  // Adiciona o gênero adicional
-  const allGenres = [...initialGenres, "Realismo Mágico"].sort();
+  let uniqueGenres = new Set(initialGenres);
+
+  initialBooks.forEach((book) => {
+    uniqueGenres.add(book.genre);
+  });
+
+  const allGenres = Array.from(uniqueGenres).sort();
+
+  if (!allGenres || allGenres.length === 0) {
+    throw new Error("Erro de dados: A lista de gêneros não pode ser vazia.");
+  }
 
   for (const name of allGenres) {
     // Insere o gênero no banco
